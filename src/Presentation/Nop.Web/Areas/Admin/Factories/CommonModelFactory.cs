@@ -41,6 +41,7 @@ using Nop.Web.Areas.Admin.Models.Localization;
 using Nop.Web.Framework.Models.Extensions;
 using Nop.Web.Framework.Security;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Nop.Services.Authentication.MultiFactor;
 
 namespace Nop.Web.Areas.Admin.Factories
 {
@@ -67,6 +68,7 @@ namespace Nop.Web.Areas.Admin.Factories
         private readonly ILocalizationService _localizationService;
         private readonly IMaintenanceService _maintenanceService;
         private readonly IMeasureService _measureService;
+        private readonly IMultiFactorAuthenticationPluginManager _multiFactorAuthenticationPluginManager;
         private readonly INopFileProvider _fileProvider;
         private readonly IOrderService _orderService;
         private readonly IPaymentPluginManager _paymentPluginManager;
@@ -111,6 +113,7 @@ namespace Nop.Web.Areas.Admin.Factories
             ILocalizationService localizationService,
             IMaintenanceService maintenanceService,
             IMeasureService measureService,
+            IMultiFactorAuthenticationPluginManager multiFactorAuthenticationPluginManager,
             IOrderService orderService,
             IPaymentPluginManager paymentPluginManager,
             IPickupPluginManager pickupPluginManager,
@@ -149,6 +152,7 @@ namespace Nop.Web.Areas.Admin.Factories
             _localizationService = localizationService;
             _maintenanceService = maintenanceService;
             _measureService = measureService;
+            _multiFactorAuthenticationPluginManager = multiFactorAuthenticationPluginManager;
             _fileProvider = fileProvider;
             _orderService = orderService;
             _paymentPluginManager = paymentPluginManager;
@@ -585,6 +589,10 @@ namespace Nop.Web.Areas.Admin.Factories
 
                     case IExternalAuthenticationMethod externalAuthenticationMethod:
                         isEnabled = _authenticationPluginManager.IsPluginActive(externalAuthenticationMethod);
+                        break;
+
+                    case IMultiFactorAuthenticationMethod multiFactorAuthenticationMethod:
+                        isEnabled = _multiFactorAuthenticationPluginManager.IsPluginActive(multiFactorAuthenticationMethod);
                         break;
 
                     case IWidgetPlugin widgetPlugin:
