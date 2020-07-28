@@ -16518,6 +16518,9 @@
   <LocaleResource Name="PageTitle.Manufacturers">
     <Value>Manufacturers</Value>
   </LocaleResource>
+  <LocaleResource Name="PageTitle.MultiFactorAuthentication">
+    <Value>Multi-factor authentication</Value>
+  </LocaleResource>
   <LocaleResource Name="PageTitle.NewProducts">
     <Value>New Products</Value>
   </LocaleResource>

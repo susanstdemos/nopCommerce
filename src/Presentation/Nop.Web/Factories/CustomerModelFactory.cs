@@ -800,6 +800,17 @@ namespace Nop.Web.Factories
                 });
             }
 
+            if (_customerSettings.EnableMultifactorAuth)
+            {
+                model.CustomerNavigationItems.Add(new CustomerNavigationItemModel
+                {
+                    RouteName = "MultiFactorAuthenticationSettings",
+                    Title = _localizationService.GetResource("PageTitle.MultiFactorAuthentication"),
+                    Tab = CustomerNavigationEnum.MultiFactorAuthentication,
+                    ItemClass = "customer-multiFactor-authentication"
+                });
+            }
+
             model.SelectedTab = (CustomerNavigationEnum)selectedTabId;
 
             return model;
@@ -934,6 +945,16 @@ namespace Nop.Web.Factories
         public virtual CheckGiftCardBalanceModel PrepareCheckGiftCardBalanceModel()
         {
             var model = new CheckGiftCardBalanceModel();
+            return model;
+        }
+
+        /// <summary>
+        /// Prepare the multifactor authentication model
+        /// </summary>
+        /// <returns>Multifactor authentication model</returns>
+        public virtual MultiFactorAuthenticationModel PrepareMultiFactorAuthenticationModel()
+        {
+            var model = new MultiFactorAuthenticationModel();
             return model;
         }
 

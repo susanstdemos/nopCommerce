@@ -119,5 +119,11 @@ namespace Nop.Web.Factories
         /// </summary>
         /// <returns>check gift card balance model</returns>
         CheckGiftCardBalanceModel PrepareCheckGiftCardBalanceModel();
+
+        // <summary>
+        /// Prepare the multifactor authentication model
+        /// </summary>
+        /// <returns>Multifactor authentication model</returns>
+        MultiFactorAuthenticationModel PrepareMultiFactorAuthenticationModel();
     }
 }

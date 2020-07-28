@@ -391,6 +391,10 @@ namespace Nop.Web.Infrastructure
             endpointRouteBuilder.MapControllerRoute("CheckGiftCardBalance", $"{pattern}customer/checkgiftcardbalance",
                 new { controller = "Customer", action = "CheckGiftCardBalance" });
 
+            //customer multifactor authentication settings 
+            endpointRouteBuilder.MapControllerRoute("MultiFactorAuthenticationSettings", $"{pattern}customer/multifactorauthentication",
+                new { controller = "Customer", action = "MultiFactorAuthentication" });
+
             //poll vote AJAX link
             endpointRouteBuilder.MapControllerRoute("PollVote", "poll/vote",
                 new { controller = "Poll", action = "Vote" });

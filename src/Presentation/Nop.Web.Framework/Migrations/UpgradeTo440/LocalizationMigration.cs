@@ -147,7 +147,9 @@ namespace Nop.Web.Framework.Migrations.UpgradeTo440
                 ["Permission.Authentication.ManageMultifactorMethods"] = "Admin area. Manage Multifactor Authentication Methods",
 
                 ["Admin.Configuration.Settings.CustomerUser.EnableMultifactorAuth"] = "Enable multifactor authentication",
-                ["Admin.Configuration.Settings.CustomerUser.EnableMultifactorAuth.Hint"] = "When enabled, users attempting to access the public store must complete a second step to verify their account."
+                ["Admin.Configuration.Settings.CustomerUser.EnableMultifactorAuth.Hint"] = "When enabled, users attempting to access the public store must complete a second step to verify their account.",
+                
+                ["PageTitle.MultiFactorAuthentication"] = "Multifactor authentication"
                 //</MFA #475>
 
             });

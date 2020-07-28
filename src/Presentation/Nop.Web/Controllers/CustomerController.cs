@@ -1803,6 +1803,24 @@ namespace Nop.Web.Controllers
 
         #endregion
 
+        #region Multifactor Authentication
+
+        [HttpsRequirement]
+        //available even when a store is closed
+        [CheckAccessClosedStore(true)]
+        public virtual IActionResult MultiFactorAuthentication()
+        {
+            if (!_customerSettings.EnableMultifactorAuth)
+            {
+                return RedirectToRoute("CustomerInfo");
+            }
+
+            var model = _customerModelFactory.PrepareMultiFactorAuthenticationModel();
+            return View(model);
+        }
+
+        #endregion
+
         #endregion
     }
 }
