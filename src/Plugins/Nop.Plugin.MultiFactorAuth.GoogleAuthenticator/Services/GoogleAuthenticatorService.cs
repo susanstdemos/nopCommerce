@@ -4,6 +4,7 @@ using Nop.Core;
 using Nop.Core.Caching;
 using Nop.Data;
 using Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Domains;
+using Nop.Services.Caching;
 
 namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Services
 {
@@ -14,16 +15,19 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Services
     {
         #region Fields
 
-        private readonly IRepository<GoogleAuthenticatorConfiguration> _repository;
+        private readonly ICacheKeyService _cacheKeyService;
+        private readonly IRepository<GoogleAuthenticatorRecord> _repository;
         private readonly IStaticCacheManager _staticCacheManager;
 
         #endregion
 
         #region Ctr
 
-        public GoogleAuthenticatorService(IRepository<GoogleAuthenticatorConfiguration> repository,
+        public GoogleAuthenticatorService(ICacheKeyService cacheKeyService,
+            IRepository<GoogleAuthenticatorRecord> repository,
             IStaticCacheManager staticCacheManager)
         {
+            _cacheKeyService = cacheKeyService;
             _repository = repository;
             _staticCacheManager = staticCacheManager;
         }
@@ -37,19 +41,33 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Services
         /// <param name="pageIndex">Page index</param>
         /// <param name="pageSize">Page size</param>
         /// <returns>Paged list of configurations</returns>
-        public IPagedList<GoogleAuthenticatorConfiguration> GetPagedConfigurations(int pageIndex = 0, int pageSize = int.MaxValue)
+        public IPagedList<GoogleAuthenticatorRecord> GetPagedConfigurations(int pageIndex = 0, int pageSize = int.MaxValue)
         {
             var query = _repository.Table;
             query = query.OrderBy(configuration => configuration.Id);
 
-            return new PagedList<GoogleAuthenticatorConfiguration>(query, pageIndex, pageSize);
+            return new PagedList<GoogleAuthenticatorRecord>(query, pageIndex, pageSize);
+        }
+
+        /// <summary>
+        /// Get a configuration by the identifier
+        /// </summary>
+        /// <param name="configurationId">Configuration identifier</param>
+        /// <returns>Configuration</returns>
+        public GoogleAuthenticatorRecord GetConfigurationById(int configurationId)
+        {
+            if (configurationId == 0)
+                return null;
+
+            return _staticCacheManager.Get(_cacheKeyService.PrepareKeyForDefaultCache(GoogleAuthenticatorDefaults.ConfigurationCacheKey, configurationId), () =>
+                _repository.GetById(configurationId));
         }
 
         /// <summary>
         /// Insert the configuration
         /// </summary>
         /// <param name="configuration">Configuration</param>
-        public void InsertConfiguration(GoogleAuthenticatorConfiguration configuration)
+        public void InsertConfiguration(GoogleAuthenticatorRecord configuration)
         {
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
@@ -62,7 +80,7 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Services
         /// Update the configuration
         /// </summary>
         /// <param name="configuration">Configuration</param>
-        public void UpdateConfiguration(GoogleAuthenticatorConfiguration configuration)
+        public void UpdateConfiguration(GoogleAuthenticatorRecord configuration)
         {
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
@@ -75,7 +93,7 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Services
         /// Delete the configuration
         /// </summary>
         /// <param name="configuration">Configuration</param>
-        public void DeleteConfiguration(GoogleAuthenticatorConfiguration configuration)
+        public void DeleteConfiguration(GoogleAuthenticatorRecord configuration)
         {
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));

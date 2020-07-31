@@ -5,12 +5,12 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Domains
     /// <summary>
     /// Represents a  Google Authenticator configuration
     /// </summary>
-    public partial class GoogleAuthenticatorConfiguration : BaseEntity
+    public class GoogleAuthenticatorRecord : BaseEntity
     {
         /// <summary>
         /// Gets or sets a customer identifier
         /// </summary>
-        public int CustomerId { get; set; }
+        public string Customer { get; set; }
 
         /// <summary>
         /// Gets or sets a SecretKey identifier

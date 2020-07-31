@@ -8,7 +8,22 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Models
     /// </summary>
     public class ConfigurationModel : BaseNopModel 
     {
+        #region Ctor
+
+        public ConfigurationModel()
+        {
+            GoogleAuthenticatorSearchModel = new GoogleAuthenticatorSearchModel();
+        }
+
+        #endregion
+
+        #region Properties
+
         [NopResourceDisplayName("Plugins.MultiFactorAuth.GoogleAuthenticator.QRPixelsPerModule")]
         public int QRPixelsPerModule { get; set; }
+
+        public GoogleAuthenticatorSearchModel GoogleAuthenticatorSearchModel { get; set; }
+
+        #endregion
     }
 }

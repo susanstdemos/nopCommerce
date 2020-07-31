@@ -1,4 +1,6 @@
-﻿namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator
+﻿using Nop.Core.Caching;
+
+namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator
 {
     /// <summary>
     /// Represents plugin constants
@@ -25,9 +27,21 @@
         /// </summary>
         public static int DefaultQRPixelsPerModule => 3;
 
+        #region Caching
+
+        /// <summary>
+        /// Gets the cache key for configuration
+        /// </summary>
+        /// <remarks>
+        /// {0} : configuration identifier
+        /// </remarks>
+        public static CacheKey ConfigurationCacheKey => new CacheKey("Nop.PluginMultiFactorAuth.GoogleAuthenticator.Configuration-{0}", PrefixCacheKey);
+
         /// <summary>
         /// Gets the prefix key to clear cache
         /// </summary>
         public static string PrefixCacheKey => "Nop.Plugin.MultiFactorAuth.GoogleAuthenticator";
+
+        #endregion
     }
 }

@@ -20,7 +20,7 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Migrations
         /// </summary>
         public override void Up()
         {
-            _migrationManager.BuildTable<GoogleAuthenticatorConfiguration>(Create);
+            _migrationManager.BuildTable<GoogleAuthenticatorRecord>(Create);
         }
     }
 }

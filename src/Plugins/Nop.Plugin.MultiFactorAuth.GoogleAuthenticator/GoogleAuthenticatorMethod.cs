@@ -71,6 +71,9 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator
                 ["Plugins.MultiFactorAuth.GoogleAuthenticator.QRPixelsPerModule"] = "QRPixelsPerModule",
                 ["Plugins.MultiFactorAuth.GoogleAuthenticator.QRPixelsPerModule.Hint"] = "Sets the number of pixels per unit. The module is one square in the QR code. By default is 3 for a 171x171 pixel image.",
                 ["Plugins.MultiFactorAuth.GoogleAuthenticator.Instructions"] = "Don't worry be happy!",
+
+                ["Plugins.MultiFactorAuth.GoogleAuthenticator.Fields.Customer"] = "Customer",
+                ["Plugins.MultiFactorAuth.GoogleAuthenticator.Fields.SecretKey"] = "Secret key",
             });
 
             base.Install();
