@@ -24,7 +24,7 @@
                 <div class="panel-body">
                     @await Html.PartialAsync("Table", new DataTablesModel
                     {
-                        Name = "authenticationmethods-grid",
+                        Name = "multifactormethods-grid",
                         UrlRead = new DataUrl("MultiFactorMethods", "Authentication", null),
                         UrlUpdate = new DataUrl("MultiFactorMethodUpdate", "Authentication", null),
                         Length = Model.PageSize,

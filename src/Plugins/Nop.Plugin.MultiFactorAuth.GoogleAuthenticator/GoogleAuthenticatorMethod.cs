@@ -1,0 +1,101 @@
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Nop.Services.Authentication.MultiFactor;
+using Nop.Services.Configuration;
+using Nop.Services.Localization;
+using Nop.Services.Plugins;
+
+namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator
+{
+    /// <summary>
+    /// Represents method for the multifactor authentication with Google Authenticator
+    /// </summary>
+    public class GoogleAuthenticatorMethod : BasePlugin, IMultiFactorAuthenticationMethod
+    {
+        #region Fields
+
+        private readonly IActionContextAccessor _actionContextAccessor;
+        private readonly ILocalizationService _localizationService;
+        private readonly ISettingService _settingService;
+        private readonly IUrlHelperFactory _urlHelperFactory;
+
+        #endregion
+
+        #region Ctor
+
+        public GoogleAuthenticatorMethod(IActionContextAccessor actionContextAccessor, 
+            ILocalizationService localizationService,
+            ISettingService settingService,
+            IUrlHelperFactory urlHelperFactory)
+        {
+            _actionContextAccessor = actionContextAccessor;
+            _localizationService = localizationService;
+            _settingService = settingService;
+            _urlHelperFactory = urlHelperFactory;
+        }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Gets a configuration page URL
+        /// </summary>
+        public override string GetConfigurationPageUrl()
+        {
+            return _urlHelperFactory.GetUrlHelper(_actionContextAccessor.ActionContext).RouteUrl(GoogleAuthenticatorDefaults.ConfigurationRouteName);
+        }
+
+        /// <summary>
+        /// Gets a name of a view component for displaying plugin in public store
+        /// </summary>
+        /// <returns>View component name</returns>
+        public string GetPublicViewComponentName()
+        {
+            return GoogleAuthenticatorDefaults.VIEW_COMPONENT_NAME;
+        }
+
+        /// <summary>
+        /// Install the plugin
+        /// </summary>
+        public override void Install()
+        {
+            //settings
+            _settingService.SaveSetting(new GoogleAuthenticatorSettings());
+
+            //locales
+            _localizationService.AddLocaleResource(new Dictionary<string, string>
+            {
+                ["Plugins.MultiFactorAuth.GoogleAuthenticator.QRPixelsPerModule"] = "QRPixelsPerModule",
+                ["Plugins.MultiFactorAuth.GoogleAuthenticator.QRPixelsPerModule.Hint"] = "Sets the number of pixels per unit. The module is one square in the QR code. By default is 3 for a 171x171 pixel image.",
+                ["Plugins.MultiFactorAuth.GoogleAuthenticator.Instructions"] = "Don't worry be happy!",
+            });
+
+            base.Install();
+        }
+
+        /// <summary>
+        /// Uninstall the plugin
+        /// </summary>
+        public override void Uninstall()
+        {
+            //settings
+            _settingService.DeleteSetting<GoogleAuthenticatorSettings>();
+
+            //locales
+            _localizationService.DeleteLocaleResources("Plugins.MultiFactorAuth.GoogleAuthenticator");
+
+            base.Uninstall();
+        }
+
+        #endregion
+
+        #region Properies
+
+        public MultiFactorAuthenticationType MultiFactorAuthenticationType => MultiFactorAuthenticationType.ApplicationVerification;
+
+        #endregion
+    }
+}
