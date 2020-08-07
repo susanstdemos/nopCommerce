@@ -14,6 +14,7 @@ using Nop.Core.Domain.Security;
 using Nop.Core.Domain.Tax;
 using Nop.Core.Domain.Vendors;
 using Nop.Services.Authentication.External;
+using Nop.Services.Authentication.MultiFactor;
 using Nop.Services.Catalog;
 using Nop.Services.Common;
 using Nop.Services.Customers;
@@ -58,6 +59,7 @@ namespace Nop.Web.Factories
         private readonly IGdprService _gdprService;
         private readonly IGenericAttributeService _genericAttributeService;
         private readonly ILocalizationService _localizationService;
+        private readonly IMultiFactorAuthenticationPluginManager _mfaPluginManager;
         private readonly INewsLetterSubscriptionService _newsLetterSubscriptionService;
         private readonly IOrderService _orderService;
         private readonly IPictureService _pictureService;
@@ -99,6 +101,7 @@ namespace Nop.Web.Factories
             IGdprService gdprService,
             IGenericAttributeService genericAttributeService,
             ILocalizationService localizationService,
+            IMultiFactorAuthenticationPluginManager mfaPluginManager,
             INewsLetterSubscriptionService newsLetterSubscriptionService,
             IOrderService orderService,
             IPictureService pictureService,
@@ -136,6 +139,7 @@ namespace Nop.Web.Factories
             _gdprService = gdprService;
             _genericAttributeService = genericAttributeService;
             _localizationService = localizationService;
+            _mfaPluginManager = mfaPluginManager;
             _newsLetterSubscriptionService = newsLetterSubscriptionService;
             _orderService = orderService;
             _pictureService = pictureService;
@@ -951,10 +955,33 @@ namespace Nop.Web.Factories
         /// <summary>
         /// Prepare the multifactor authentication model
         /// </summary>
+        /// <param name="model">Multi-factor authentication model</param>
         /// <returns>Multifactor authentication model</returns>
-        public virtual MultiFactorAuthenticationModel PrepareMultiFactorAuthenticationModel()
-        {
-            var model = new MultiFactorAuthenticationModel();
+        public virtual MultiFactorAuthenticationModel PrepareMultiFactorAuthenticationModel(MultiFactorAuthenticationModel model)
+        {            
+            var customer = _workContext.CurrentCustomer;
+            
+            model.IsEnabled = _genericAttributeService.GetAttribute<bool>(customer, NopCustomerDefaults.MultiFactorIsEnabledAttribute);
+            
+            //TODO посмотреть на общую настройку, включена ли mfa глобально
+
+            var mfaProviders = _mfaPluginManager.LoadActivePlugins(_workContext.CurrentCustomer, _storeContext.CurrentStore.Id).ToList();
+            var selectedProvider = _genericAttributeService.GetAttribute<string>(customer, NopCustomerDefaults.SelectedMultiFactorAuthProviderAttribute);
+            foreach (var mfaProvider in mfaProviders)
+            {
+                var providerModel = new MultiFactorProviderModel();
+                var sysName = mfaProvider.PluginDescriptor.SystemName;
+
+                providerModel.Name = _localizationService.GetLocalizedFriendlyName(mfaProvider, _workContext.WorkingLanguage.Id);
+                providerModel.SystemName = sysName;
+                providerModel.Description = mfaProvider.PluginDescriptor.Description;
+                providerModel.LogoUrl = _mfaPluginManager.GetPluginLogoUrl(mfaProvider);
+                providerModel.PageConfigURL = "";
+                providerModel.Selected = sysName == selectedProvider; 
+                
+                model.Providers.Add(providerModel);
+            }
+
             return model;
         }
 

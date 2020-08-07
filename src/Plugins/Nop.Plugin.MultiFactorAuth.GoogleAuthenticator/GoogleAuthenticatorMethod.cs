@@ -25,7 +25,7 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator
 
         #region Ctor
 
-        public GoogleAuthenticatorMethod(IActionContextAccessor actionContextAccessor, 
+        public GoogleAuthenticatorMethod(IActionContextAccessor actionContextAccessor,
             ILocalizationService localizationService,
             ISettingService settingService,
             IUrlHelperFactory urlHelperFactory)
@@ -58,12 +58,24 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator
         }
 
         /// <summary>
+        /// Gets a name of a view component for displaying verification page
+        /// </summary>
+        /// <returns>View component name</returns>
+        public string GetVerificationViewComponentName()
+        {
+            return GoogleAuthenticatorDefaults.VERIFICATION_VIEW_COMPONENT_NAME;
+        }
+
+        /// <summary>
         /// Install the plugin
         /// </summary>
         public override void Install()
         {
             //settings
-            _settingService.SaveSetting(new GoogleAuthenticatorSettings());
+            _settingService.SaveSetting(new GoogleAuthenticatorSettings()
+            {
+                QRPixelsPerModule = GoogleAuthenticatorDefaults.DefaultQRPixelsPerModule
+            });
 
             //locales
             _localizationService.AddLocaleResource(new Dictionary<string, string>

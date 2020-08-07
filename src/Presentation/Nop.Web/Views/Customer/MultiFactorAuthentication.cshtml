@@ -35,11 +35,38 @@
         }
     </div>
     <div class="page-body">
-         <form asp-controller="Customer" asp-action="MultiFactorAuthenticatorSettings" method="post">            
+         <form asp-route="MultiFactorAuthenticatorSettings" method="post">            
             <div class="fieldset">
-                <div class="form-fields">
-                    rrr
+                <div class="title">
+                    <strong>@T("Account.MultiFactorAuthentication.Settings")</strong>
                 </div>
+                <div class="form-fields">
+                    <div class="inputs">
+                        <label asp-for="IsEnabled" asp-postfix=":"></label>
+                        <input asp-for="IsEnabled" />
+                        <span asp-validation-for="IsEnabled"></span>
+                    </div>
+                </div>
+            </div>
+            @if (Model.IsEnabled)
+            {
+                 <div class="fieldset">
+                    <div class="title">
+                        <strong>@T("Account.MultiFactorAuthentication.Providers")</strong>
+                    </div>
+                    <div class="form-fields">
+                        <div class="section payment-method">
+                            @if (Model.Providers.Count > 0)
+                            {
+                                @await Html.PartialAsync("_MultiFactorAuthProviders", Model.Providers)
+                            }
+                        </div>                        
+                    </div>
+                 </div>
+            }
+            
+            <div class="buttons">
+                <input type="submit" id="save-mfa-settings-button" value="@T("Common.Save")" name="save-mfa-settsing-button" class="button-1 save-customer-mfa-button" />
             </div>
         </form>        
     </div>
