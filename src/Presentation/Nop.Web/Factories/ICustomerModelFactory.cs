@@ -2,6 +2,7 @@
 using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Orders;
+using Nop.Services.Authentication.MultiFactor;
 using Nop.Web.Models.Customer;
 
 namespace Nop.Web.Factories
@@ -126,5 +127,13 @@ namespace Nop.Web.Factories
         /// <param name="model">Multi-factor authentication model</param>
         /// <returns>Multifactor authentication model</returns>
         MultiFactorAuthenticationModel PrepareMultiFactorAuthenticationModel(MultiFactorAuthenticationModel model);
+
+        /// <summary>
+        /// Prepare the multifactor provider model
+        /// </summary>
+        /// <param name="providerModel">Multi-factor provider model</param>
+        /// <param name="sysName">Multi-factor provider system name</param>
+        /// <returns>Multifactor provider model</returns>
+        MultiFactorProviderModel PrepareMultiFactorProviderModel(MultiFactorProviderModel providerModel, string sysName);
     }
 }

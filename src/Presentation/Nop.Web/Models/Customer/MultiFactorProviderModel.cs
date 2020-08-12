@@ -14,6 +14,6 @@ namespace Nop.Web.Models.Customer
 
         public string Description { get; set; }
 
-        public string PageConfigURL { get; set; }
+        public string ViewComponentName { get; set; }
     }
 }

@@ -21,10 +21,16 @@
                         <div class="payment-description">@provider.Description</div>
                     }
                 </div>
-                <div class="provider-config">
-                    <button>Configuration</button>
+
+                <div class="buttons">
+                    <input type="button" class="button-2 config-provider-button" onclick="location.href = '@(Url.RouteUrl("CustomerMFAProviderConfig", new { providerSysName = provider.SystemName}))'" value="@T("Common.Edit")"/>
                 </div>
+                @* view component there *@
+                @*<div>
+                    @(await Component.InvokeAsync(provider.ViewComponentName)) 
+                </div>*@
             </div>
-        </li>        
+        </li>  
     }
 </ul>
+

@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Factories;
+using Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Models;
 using Nop.Web.Framework.Components;
 
 namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Components
@@ -11,13 +13,15 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Components
     {
         #region Fields
 
+        private readonly AuthorizationModelFactory _authorizationModelFactory;
+
         #endregion
 
         #region Ctor
 
-        public GAAuthorizationViewComponent()
+        public GAAuthorizationViewComponent(AuthorizationModelFactory authorizationModelFactory)
         {
-
+            _authorizationModelFactory = authorizationModelFactory;
         }
 
         #endregion
@@ -32,7 +36,10 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Components
         /// <returns>View component result</returns>
         public IViewComponentResult Invoke(string widgetZone, object additionalData)
         {
-            return View("~/Plugins/MultiFactorAuth.GoogleAuthenticator/Views/Customer/GAAuthorization.cshtml");
+            var model = new AuthModel();
+            model = _authorizationModelFactory.PrepareAuthModel(model);
+
+            return View("~/Plugins/MultiFactorAuth.GoogleAuthenticator/Views/Customer/GAAuthorization.cshtml", model);
         }
 
         #endregion

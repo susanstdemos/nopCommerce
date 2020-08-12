@@ -11,5 +11,11 @@ namespace Nop.Services.Authentication.MultiFactor
         ///  Gets a multifactor authentication type
         /// </summary>
         MultiFactorAuthenticationType MultiFactorAuthenticationType { get; }
+
+        /// <summary>
+        /// Gets a name of a view component for displaying plugin in public store
+        /// </summary>
+        /// <returns>View component name</returns>
+        string GetPublicViewComponentName();
     }
 }

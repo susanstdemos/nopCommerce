@@ -965,24 +965,40 @@ namespace Nop.Web.Factories
             
             //TODO посмотреть на общую настройку, включена ли mfa глобально
 
-            var mfaProviders = _mfaPluginManager.LoadActivePlugins(_workContext.CurrentCustomer, _storeContext.CurrentStore.Id).ToList();
-            var selectedProvider = _genericAttributeService.GetAttribute<string>(customer, NopCustomerDefaults.SelectedMultiFactorAuthProviderAttribute);
+            var mfaProviders = _mfaPluginManager.LoadActivePlugins(customer, _storeContext.CurrentStore.Id).ToList();            
             foreach (var mfaProvider in mfaProviders)
             {
                 var providerModel = new MultiFactorProviderModel();
                 var sysName = mfaProvider.PluginDescriptor.SystemName;
-
-                providerModel.Name = _localizationService.GetLocalizedFriendlyName(mfaProvider, _workContext.WorkingLanguage.Id);
-                providerModel.SystemName = sysName;
-                providerModel.Description = mfaProvider.PluginDescriptor.Description;
-                providerModel.LogoUrl = _mfaPluginManager.GetPluginLogoUrl(mfaProvider);
-                providerModel.PageConfigURL = "";
-                providerModel.Selected = sysName == selectedProvider; 
-                
+                providerModel = PrepareMultiFactorProviderModel(providerModel, sysName);                
                 model.Providers.Add(providerModel);
             }
 
             return model;
+        }
+
+        /// <summary>
+        /// Prepare the multifactor provider model
+        /// </summary>
+        /// <param name="providerModel">Multi-factor provider model</param>
+        /// <param name="sysName">Multi-factor provider system name</param>
+        /// <returns>Multifactor provider model</returns>
+        public virtual MultiFactorProviderModel PrepareMultiFactorProviderModel(MultiFactorProviderModel providerModel, string sysName)
+        {
+            var customer = _workContext.CurrentCustomer;
+            var selectedProvider = _genericAttributeService.GetAttribute<string>(customer, NopCustomerDefaults.SelectedMultiFactorAuthProviderAttribute);
+
+            var mfaProvider = _mfaPluginManager.LoadActivePlugins(customer, _storeContext.CurrentStore.Id)
+                    .Where(provider => provider.PluginDescriptor.SystemName == sysName).FirstOrDefault();
+
+            providerModel.Name = _localizationService.GetLocalizedFriendlyName(mfaProvider, _workContext.WorkingLanguage.Id);
+            providerModel.SystemName = sysName;
+            providerModel.Description = mfaProvider.PluginDescriptor.Description;
+            providerModel.LogoUrl = _mfaPluginManager.GetPluginLogoUrl(mfaProvider);
+            providerModel.ViewComponentName = mfaProvider.GetPublicViewComponentName();
+            providerModel.Selected = sysName == selectedProvider;
+
+            return providerModel;
         }
 
         #endregion

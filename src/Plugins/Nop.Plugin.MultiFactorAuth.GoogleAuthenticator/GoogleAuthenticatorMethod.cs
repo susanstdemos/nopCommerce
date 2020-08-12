@@ -80,12 +80,22 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator
             //locales
             _localizationService.AddLocaleResource(new Dictionary<string, string>
             {
+                //admin config 
                 ["Plugins.MultiFactorAuth.GoogleAuthenticator.QRPixelsPerModule"] = "QRPixelsPerModule",
                 ["Plugins.MultiFactorAuth.GoogleAuthenticator.QRPixelsPerModule.Hint"] = "Sets the number of pixels per unit. The module is one square in the QR code. By default is 3 for a 171x171 pixel image.",
                 ["Plugins.MultiFactorAuth.GoogleAuthenticator.Instructions"] = "Don't worry be happy!",
 
+                //db fields
                 ["Plugins.MultiFactorAuth.GoogleAuthenticator.Fields.Customer"] = "Customer",
                 ["Plugins.MultiFactorAuth.GoogleAuthenticator.Fields.SecretKey"] = "Secret key",
+
+                //customer config
+                ["Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.ManualSetupCode"] = "Manual entry setup code:",
+                ["Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.SendCode"] = "Send code & register",
+                ["Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.Instruction"] = "Please download the app Google Authenticator to scan this QR code.",
+                ["Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.Account"] = "Account: ",
+                ["Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.TypeKey"] = "Time based : Yes",
+                ["Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.Key"] = "Key: ",
             });
 
             base.Install();

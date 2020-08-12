@@ -319,6 +319,9 @@ namespace Nop.Web.Infrastructure
             endpointRouteBuilder.MapControllerRoute("CustomerAddressAdd", $"{pattern}customer/addressadd",
                 new { controller = "Customer", action = "AddressAdd" });
 
+            endpointRouteBuilder.MapControllerRoute("CustomerMFAProviderConfig", $"{pattern}customer/providerconfig",
+                new { controller = "Customer", action = "ConfigureMultiFactorAuthProvider" });
+
             //customer profile page
             endpointRouteBuilder.MapControllerRoute("CustomerProfile",
                 pattern + "profile/{id:min(0)}",

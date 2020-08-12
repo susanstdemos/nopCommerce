@@ -1,5 +1,71 @@
-﻿@model ConfigurationModel
+﻿@model Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Models.AuthModel
 
-<div>
-    Configggggggg
+<div class="google-authenticator-conteiner">
+    
+    <div class="qr-code-conteiner">
+        <div class="instruction">
+            @T("Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.Instruction")
+        </div>
+        <div class="qr-code-image">
+            <img src="@(Model.QrCodeImageUrl)" />
+        </div>
+    </div>
+    <div class="manual-code-setup">
+        <div class="instruction">
+            @T("Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.ManualSetupCode") @(Model.ManualEntryQrCode)
+        </div>
+        <div class="account-info">
+            <span>@T("Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.Account") @(Model.Account)</span>
+            <span>@T("Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.Key") @(Model.ManualEntryQrCode)</span>
+            <span>@T("Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.TypeKey")</span>
+        </div>
+    </div>
+
+    <form asp-controller="Authentication" asp-action="RegisterGoogleAuthenticator" method="post">
+        <div>
+            <input asp-for="SecretKey" type="hidden" />
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <div class="col-md-3">
+                    <nop-label asp-for="Code" />
+                </div>
+                <div class="col-md-9">
+                    <nop-editor asp-for="Code" />
+                    <span asp-validation-for="Code"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-9 col-md-offset-3">
+                    @*<button type="button" id="googleAuthSendCode" class="btn bg-navy">
+                        @T("Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.SendCode")
+                    </button>*@
+                    <input type="submit" name="save" class="btn bg-primary" value="@T("Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.SendCode")" />
+                </div>
+                @*<script asp-location="Footer" type="text/javascript">
+                    $(document).ready(function () {
+                        $('#googleAuthSendCode').click(function () {
+                            var postData = {
+                                verifyToken: '@Model.Code',
+                                code: '@Model.SecretKey'
+                            };
+                            addAntiForgeryToken(postData);
+                            $.ajax({
+                                cache: false,
+                                type: "POST",
+                                url: "@(Url.Action("RegisterGoogleAuthenticator", "Authentication"))",
+                                data: postData,
+                                success: function (data) {
+                                    location.reload();
+                                },
+                                error: function (jqXHR, textStatus, errorThrown) {
+                                    alert('Failed to register in GoogleAuthenticator.');
+                                }
+                            });
+                        });
+                    });
+                </script>*@
+            </div>
+        </div>
+    </form>
 </div>

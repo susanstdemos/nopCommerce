@@ -2,6 +2,7 @@
 using Nop.Core.Configuration;
 using Nop.Core.Infrastructure;
 using Nop.Core.Infrastructure.DependencyManagement;
+using Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Factories;
 using Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Services;
 
 namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Infrastructure
@@ -10,10 +11,11 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Infrastructure
     {
         public void Register(ContainerBuilder builder, ITypeFinder typeFinder, NopConfig config)
         {
+            //register custom services
             builder.RegisterType<GoogleAuthenticatorService>().AsSelf().InstancePerLifetimeScope();
-            //builder.RegisterType<CustomService>().As<ICustomAttributeService>().InstancePerLifetimeScope();
 
-            //builder.RegisterType<CustomModelFactory>().As<ICustomModelFactory>().InstancePerLifetimeScope();
+            //register custom factories
+            builder.RegisterType<AuthorizationModelFactory>().AsSelf().InstancePerLifetimeScope();
         }
 
         public int Order => 1;
