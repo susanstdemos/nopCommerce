@@ -4,7 +4,7 @@
     
     <div class="qr-code-conteiner">
         <div class="instruction">
-            @T("Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.Instruction")
+            @Html.Raw(T("Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.Instruction"))
         </div>
         <div class="qr-code-image">
             <img src="@(Model.QrCodeImageUrl)" />
@@ -12,7 +12,7 @@
     </div>
     <div class="manual-code-setup">
         <div class="instruction">
-            @T("Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.ManualSetupCode") @(Model.ManualEntryQrCode)
+            @Html.Raw(T("Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.InstructionManual"))
         </div>
         <div class="account-info">
             <span>@T("Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.Account") @(Model.Account)</span>

@@ -1,7 +1,7 @@
 ﻿using System;
-using Google.Authenticator;
 using Nop.Core;
 using Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Models;
+using Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Services;
 
 namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Factories
 {
@@ -10,33 +10,21 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Factories
         #region Fields
 
         private readonly IWorkContext _workContext;
-        private TwoFactorAuthenticator _twoFactorAuthenticator;
+        private readonly GoogleAuthenticatorService _googleAuthenticatorService;
 
         #endregion
 
         #region Ctor
 
-        public AuthorizationModelFactory(
+        public AuthorizationModelFactory(GoogleAuthenticatorService googleAuthenticatorService,
             IWorkContext workContext)
         {
-            _workContext = workContext;            
+            _googleAuthenticatorService = googleAuthenticatorService;
+            _workContext = workContext;
         }
 
         #endregion
-
-        #region Properties
-
-        private TwoFactorAuthenticator TwoFactorAuthenticator
-        {
-            get
-            {
-                _twoFactorAuthenticator = new TwoFactorAuthenticator();
-                return _twoFactorAuthenticator;
-            }
-        }
-
-        #endregion
-
+        
         #region Methods
 
         public AuthModel PrepareAuthModel(AuthModel model)
@@ -45,7 +33,7 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Factories
                 throw new ArgumentNullException(nameof(model));
 
             var secretkey = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 10);
-            var setupInfo = TwoFactorAuthenticator.GenerateSetupCode("nopCommerce", _workContext.CurrentCustomer.Email, secretkey, false, 3);
+            var setupInfo = _googleAuthenticatorService.GenerateSetupCode(secretkey);
 
             model.SecretKey = secretkey;
             model.Account = $"nopCommerce ({_workContext.CurrentCustomer.Email})";

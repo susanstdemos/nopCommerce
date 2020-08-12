@@ -32,7 +32,7 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Controllers
         private readonly IPermissionService _permissionService;
         private readonly ISettingService _settingService;
         private readonly IStoreContext _storeContext;
-        private readonly IWorkContext _workContext;
+        
 
         #endregion
 
@@ -45,8 +45,7 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Controllers
             INotificationService notificationService,
             IPermissionService permissionService,
             ISettingService settingService,
-            IStoreContext storeContext,
-            IWorkContext workContext
+            IStoreContext storeContext            
             )
         {
             _googleAuthenticatorService = googleAuthenticatorService;
@@ -56,8 +55,7 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Controllers
             _notificationService = notificationService;
             _permissionService = permissionService;
             _settingService = settingService;
-            _storeContext = storeContext;
-            _workContext = workContext;
+            _storeContext = storeContext;            
         }
 
         #endregion

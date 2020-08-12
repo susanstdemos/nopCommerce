@@ -1,4 +1,5 @@
 ﻿using Nop.Web.Framework.Models;
+using Nop.Web.Framework.Mvc.ModelBinding;
 
 namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Models
 {
@@ -6,10 +7,12 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Models
     {
         public string SecretKey { get; set; }
 
+        [NopResourceDisplayName("Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.VerificationToken")]
         public string Code { get; set; }
 
         public string QrCodeImageUrl { get; set; }
 
+        [NopResourceDisplayName("Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.ManualSetupCode")]
         public string ManualEntryQrCode { get; set; }
 
         public string Account { get; set; }
