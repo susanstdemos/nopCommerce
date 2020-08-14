@@ -124,7 +124,6 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Controllers
         }
 
         [HttpPost]
-
         public IActionResult GoogleAuthenticatorDelete (GoogleAuthenticatorModel model)
         {
             if (!ModelState.IsValid)

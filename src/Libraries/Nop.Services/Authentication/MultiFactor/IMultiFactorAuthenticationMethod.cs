@@ -17,5 +17,11 @@ namespace Nop.Services.Authentication.MultiFactor
         /// </summary>
         /// <returns>View component name</returns>
         string GetPublicViewComponentName();
+
+        /// <summary>
+        /// Gets a name of a view component for displaying plugin in login page
+        /// </summary>
+        /// <returns>View component name</returns>
+        string GetLoginViewComponentName();
     }
 }

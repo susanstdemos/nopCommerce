@@ -145,6 +145,14 @@ namespace Nop.Services.Customers
                 return CustomerLoginResults.WrongPassword;
             }
 
+            var selectedProvider = _genericAttributeService.GetAttribute<string>(customer, NopCustomerDefaults.SelectedMultiFactorAuthProviderAttribute);
+            var enabledMFACustomer = _genericAttributeService.GetAttribute<bool>(customer, NopCustomerDefaults.MultiFactorIsEnabledAttribute);
+
+            // TODO проверить активен ли данный провайдер (плагин)
+            
+            if (!string.IsNullOrEmpty(selectedProvider) && enabledMFACustomer && _customerSettings.EnableMultifactorAuth)
+                return CustomerLoginResults.RequiresMultiFactor;
+
             //update login details
             customer.FailedLoginAttempts = 0;
             customer.CannotLoginUntilDateUtc = null;

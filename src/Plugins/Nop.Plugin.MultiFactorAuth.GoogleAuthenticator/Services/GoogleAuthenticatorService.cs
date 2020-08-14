@@ -107,7 +107,7 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Services
                 _repository.GetById(configurationId));
         }
 
-        protected GoogleAuthenticatorRecord GetConfigurationByCustomerEmail(string email)
+        internal GoogleAuthenticatorRecord GetConfigurationByCustomerEmail(string email)
         {
             if (string.IsNullOrEmpty(email))
                 return null;

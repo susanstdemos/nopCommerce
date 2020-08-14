@@ -983,7 +983,7 @@ namespace Nop.Web.Factories
         /// <param name="providerModel">Multi-factor provider model</param>
         /// <param name="sysName">Multi-factor provider system name</param>
         /// <returns>Multifactor provider model</returns>
-        public virtual MultiFactorProviderModel PrepareMultiFactorProviderModel(MultiFactorProviderModel providerModel, string sysName)
+        public virtual MultiFactorProviderModel PrepareMultiFactorProviderModel(MultiFactorProviderModel providerModel, string sysName, bool isLogin = false)
         {
             var customer = _workContext.CurrentCustomer;
             var selectedProvider = _genericAttributeService.GetAttribute<string>(customer, NopCustomerDefaults.SelectedMultiFactorAuthProviderAttribute);
@@ -995,7 +995,7 @@ namespace Nop.Web.Factories
             providerModel.SystemName = sysName;
             providerModel.Description = mfaProvider.PluginDescriptor.Description;
             providerModel.LogoUrl = _mfaPluginManager.GetPluginLogoUrl(mfaProvider);
-            providerModel.ViewComponentName = mfaProvider.GetPublicViewComponentName();
+            providerModel.ViewComponentName = isLogin ? mfaProvider.GetLoginViewComponentName(): mfaProvider.GetPublicViewComponentName();
             providerModel.Selected = sysName == selectedProvider;
 
             return providerModel;

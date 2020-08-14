@@ -133,7 +133,8 @@ namespace Nop.Web.Factories
         /// </summary>
         /// <param name="providerModel">Multi-factor provider model</param>
         /// <param name="sysName">Multi-factor provider system name</param>
+        /// <param name="isLogin">Is login page</param>
         /// <returns>Multifactor provider model</returns>
-        MultiFactorProviderModel PrepareMultiFactorProviderModel(MultiFactorProviderModel providerModel, string sysName);
+        MultiFactorProviderModel PrepareMultiFactorProviderModel(MultiFactorProviderModel providerModel, string sysName, bool isLogin = false);
     }
 }

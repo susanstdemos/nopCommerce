@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Models;
 using Nop.Web.Framework.Components;
 
 namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Components
@@ -32,7 +33,8 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Components
         /// <returns>View component result</returns>
         public IViewComponentResult Invoke(string widgetZone, object additionalData)
         {
-            return View("~/Plugins/MultiFactorAuth.GoogleAuthenticator/Views/Customer/GAVefification.cshtml");
+            var model = new TokenModel();
+            return View("~/Plugins/MultiFactorAuth.GoogleAuthenticator/Views/Customer/GAVefification.cshtml", model);
         }
 
         #endregion

@@ -58,6 +58,15 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator
         }
 
         /// <summary>
+        /// Gets a name of a view component for displaying plugin in login page
+        /// </summary>
+        /// <returns>View component name</returns>
+        public string GetLoginViewComponentName()
+        {
+            return GoogleAuthenticatorDefaults.VERIFICATION_VIEW_COMPONENT_NAME;
+        }
+
+        /// <summary>
         /// Gets a name of a view component for displaying verification page
         /// </summary>
         /// <returns>View component name</returns>

@@ -448,23 +448,14 @@ namespace Nop.Web.Controllers
                                 ? _customerService.GetCustomerByUsername(model.Username)
                                 : _customerService.GetCustomerByEmail(model.Email);
 
-                            //migrate shopping cart
-                            _shoppingCartService.MigrateShoppingCart(_workContext.CurrentCustomer, customer, true);
-
-                            //sign in new customer
-                            _authenticationService.SignIn(customer, model.RememberMe);
-
-                            //raise event       
-                            _eventPublisher.Publish(new CustomerLoggedinEvent(customer));
-
-                            //activity log
-                            _customerActivityService.InsertActivity(customer, "PublicStore.Login",
-                                _localizationService.GetResource("ActivityLog.PublicStore.Login"), customer);
-
-                            if (string.IsNullOrEmpty(returnUrl) || !Url.IsLocalUrl(returnUrl))
-                                return RedirectToRoute("Homepage");
-
-                            return Redirect(returnUrl);
+                            //sign in
+                            return SignInAction(customer, returnUrl, model.RememberMe);                            
+                        }
+                    case CustomerLoginResults.RequiresMultiFactor:
+                        {
+                            var userName = _customerSettings.UsernamesEnabled ? model.Username : model.Email;
+                            HttpContext.Session.SetString("RequiresMultiFactor", userName);
+                            return RedirectToRoute("MultiFactorAuthorization");
                         }
                     case CustomerLoginResults.CustomerNotExist:
                         ModelState.AddModelError("", _localizationService.GetResource("Account.Login.WrongCredentials.CustomerNotExist"));
@@ -491,6 +482,68 @@ namespace Nop.Web.Controllers
             //If we got this far, something failed, redisplay form
             model = _customerModelFactory.PrepareLoginModel(model.CheckoutAsGuest);
             return View(model);
+        }
+
+        public virtual IActionResult MultiFactorAuthorization()
+        {
+            if (!_customerSettings.EnableMultifactorAuth)
+                return RedirectToRoute("Login");
+
+            var username = HttpContext.Session.GetString("RequiresMultiFactor");
+            if (string.IsNullOrEmpty(username))
+                return RedirectToRoute("HomePage");
+
+            var customer = _customerSettings.UsernamesEnabled ? _customerService.GetCustomerByUsername(username) : _customerService.GetCustomerByEmail(username);
+            if (customer == null)
+                return RedirectToRoute("HomePage");
+
+            var enabledMFACustomer = _genericAttributeService.GetAttribute<bool>(customer, NopCustomerDefaults.MultiFactorIsEnabledAttribute);
+            if (!enabledMFACustomer)
+                return RedirectToRoute("HomePage");
+
+            var selectedProvider = _genericAttributeService.GetAttribute<string>(customer, NopCustomerDefaults.SelectedMultiFactorAuthProviderAttribute);
+
+            var model = new MultiFactorProviderModel();
+            model = _customerModelFactory.PrepareMultiFactorProviderModel(model, selectedProvider, true);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public virtual IActionResult MultiFactorAuthorization(string customer)
+        {
+            //var username = HttpContext.Session.GetString("RequiresMultiFactor");
+            //if (customer == username)
+            //{
+            //    //remove session
+            //    HttpContext.Session.Remove("RequiresMultiFactor");
+            //}
+            var registeredCustomer = _customerSettings.UsernamesEnabled 
+                ? _customerService.GetCustomerByUsername(customer) 
+                : _customerService.GetCustomerByEmail(customer);
+
+            return SignInAction(registeredCustomer);
+        }
+
+        protected IActionResult SignInAction(Customer customer, string returnUrl = null, bool rememberMe = false)
+        {
+            //migrate shopping cart
+            _shoppingCartService.MigrateShoppingCart(_workContext.CurrentCustomer, customer, true);
+
+            //sign in new customer
+            _authenticationService.SignIn(customer, rememberMe);
+
+            //raise event       
+            _eventPublisher.Publish(new CustomerLoggedinEvent(customer));
+
+            //activity log
+            _customerActivityService.InsertActivity(customer, "PublicStore.Login",
+                _localizationService.GetResource("ActivityLog.PublicStore.Login"), customer);
+
+            if (string.IsNullOrEmpty(returnUrl) || !Url.IsLocalUrl(returnUrl))
+                return RedirectToRoute("Homepage");
+
+            return Redirect(returnUrl);
         }
 
         //available even when a store is closed
