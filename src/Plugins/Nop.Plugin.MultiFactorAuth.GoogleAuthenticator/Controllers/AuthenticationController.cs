@@ -9,6 +9,7 @@ using Nop.Services.Customers;
 using Nop.Services.Events;
 using Nop.Services.Localization;
 using Nop.Services.Logging;
+using Nop.Services.Messages;
 using Nop.Services.Orders;
 using Nop.Web.Framework.Controllers;
 
@@ -26,6 +27,7 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Controllers
         private readonly ICustomerService _customerService;
         private readonly IEventPublisher _eventPublisher;
         private readonly ILocalizationService _localizationService;
+        private readonly INotificationService _notificationService;
         private readonly IShoppingCartService _shoppingCartService;
         private readonly IWorkContext _workContext;
 
@@ -40,6 +42,7 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Controllers
             ICustomerService customerService,
             IEventPublisher eventPublisher,
             ILocalizationService localizationService,
+            INotificationService notificationService,
             IShoppingCartService shoppingCartService,
             IWorkContext workContext)
         {
@@ -50,6 +53,7 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Controllers
             _customerService = customerService;
             _eventPublisher = eventPublisher;
             _localizationService = localizationService;
+            _notificationService = notificationService;
             _shoppingCartService = shoppingCartService;
             _workContext = workContext;
         }
@@ -75,6 +79,12 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Controllers
                 {
                     _googleAuthenticatorService.AddGoogleAuthenticatorAccount(currentCustomer.Email, model.SecretKey);
                 }
+                _notificationService.SuccessNotification(_localizationService.GetResource("Plugins.MultiFactorAuth.GoogleAuthenticator.Token.Successful"));
+            }
+            else
+            {
+                _notificationService.ErrorNotification(_localizationService.GetResource("Plugins.MultiFactorAuth.GoogleAuthenticator.Token.Unsuccessful"));
+                return RedirectToRoute("CustomerMFAProviderConfig", new { providerSysName = GoogleAuthenticatorDefaults.SystemName });
             }
             
             return RedirectToRoute("MultiFactorAuthenticationSettings");
@@ -114,6 +124,10 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Controllers
                         return RedirectToRoute("Homepage");
 
                     return Redirect(returnUrl);
+                }
+                else
+                {
+                    _notificationService.ErrorNotification(_localizationService.GetResource("Plugins.MultiFactorAuth.GoogleAuthenticator.Token.Unsuccessful"));
                 }
             }
 
