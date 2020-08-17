@@ -1,28 +1,19 @@
 ﻿@model MultiFactorProviderModel
 
-@using Nop.Core
-@inject IWebHelper webHelper
-
 @{
     Layout = "_ColumnsOne";
 
     //title
-    //Html.AddTitleParts(T("PageTitle.Login").Text);
-
-    //register URL with return URL (if specified)
-    var registerUrl = Url.RouteUrl("Register", new { returnUrl = this.Context.Request.Query["returnUrl"] }, webHelper.CurrentRequestProtocol);
+    Html.AddTitleParts(T("PageTitle.MultiFactorAuthorization").Text);
 }
 
 <div class="page login-page">
     <div class="page-title">
         <h1>@T("Account.Login.Welcome")</h1>
     </div>
-    @*<nop-antiforgery-token/>*@
     <div class="page-body">
-        @*<form asp-route="MultiFactorAuthorization" asp-route-returnurl="@Context.Request.Query["ReturnUrl"]" method="post">*@           
             <div class="provider-verification">
                 @(await Component.InvokeAsync(Model.ViewComponentName)) 
             </div>
-        @*</form>*@
     </div>
 </div>

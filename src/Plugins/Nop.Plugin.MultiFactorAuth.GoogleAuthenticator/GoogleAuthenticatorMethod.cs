@@ -107,6 +107,10 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator
                 ["Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.Account"] = "Account: ",
                 ["Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.TypeKey"] = "Time based : Yes",
                 ["Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.Key"] = "Key: ",
+
+                //validators
+                ["Plugins.MultiFactorAuth.GoogleAuthenticator.Fields.Code.Required"] = "Field cannot be empty",
+                ["Plugins.MultiFactorAuth.GoogleAuthenticator.Fields.Code.Wrong"] = "Field must be 6 digits",
             });
 
             base.Install();
