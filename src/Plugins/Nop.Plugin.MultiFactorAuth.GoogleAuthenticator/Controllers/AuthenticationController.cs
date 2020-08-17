@@ -4,8 +4,12 @@ using Nop.Core;
 using Nop.Core.Domain.Customers;
 using Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Models;
 using Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Services;
+using Nop.Services.Authentication;
 using Nop.Services.Customers;
-using Nop.Web.Controllers;
+using Nop.Services.Events;
+using Nop.Services.Localization;
+using Nop.Services.Logging;
+using Nop.Services.Orders;
 using Nop.Web.Framework.Controllers;
 
 namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Controllers
@@ -15,25 +19,38 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Controllers
     {
         #region Fields
 
-        private readonly CustomerController _customerController;
         private readonly CustomerSettings _customerSettings;
         private readonly GoogleAuthenticatorService _googleAuthenticatorService;
+        private readonly IAuthenticationService _authenticationService;
+        private readonly ICustomerActivityService _customerActivityService;
         private readonly ICustomerService _customerService;
+        private readonly IEventPublisher _eventPublisher;
+        private readonly ILocalizationService _localizationService;
+        private readonly IShoppingCartService _shoppingCartService;
         private readonly IWorkContext _workContext;
 
         #endregion
 
         #region Ctor
-        public AuthenticationController(CustomerController customerController,
+        public AuthenticationController(
             CustomerSettings customerSettings,
             GoogleAuthenticatorService googleAuthenticatorService,
+            IAuthenticationService authenticationService,
+            ICustomerActivityService customerActivityService,
             ICustomerService customerService,
+            IEventPublisher eventPublisher,
+            ILocalizationService localizationService,
+            IShoppingCartService shoppingCartService,
             IWorkContext workContext)
         {
-            _customerController = customerController;
             _customerSettings = customerSettings;
             _googleAuthenticatorService = googleAuthenticatorService;
+            _authenticationService = authenticationService;
+            _customerActivityService = customerActivityService;
             _customerService = customerService;
+            _eventPublisher = eventPublisher;
+            _localizationService = localizationService;
+            _shoppingCartService = shoppingCartService;
             _workContext = workContext;
         }
 
@@ -42,7 +59,6 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Controllers
         #region Methods
 
         [HttpPost]
-        //public IActionResult RegisterGoogleAuthenticator(string verifyToken, string code)
         public IActionResult RegisterGoogleAuthenticator(AuthModel model)
         {
             var currentCustomer = _workContext.CurrentCustomer;
@@ -65,10 +81,11 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Controllers
         }
 
         [HttpPost]
-        //public IActionResult VerifyGoogleAuthenticator(string verifyToken)
         public IActionResult VerifyGoogleAuthenticator(TokenModel model)
         {
-            var username = HttpContext.Session.GetString("RequiresMultiFactor");
+            var username = HttpContext.Session.GetString(NopCustomerDefaults.MFAUserName);
+            var returnUrl = HttpContext.Session.GetString(NopCustomerDefaults.MFAReturnUrl);
+            bool.TryParse(HttpContext.Session.GetString(NopCustomerDefaults.MFARememberMe), out var isPersist);
 
             var customer = _customerSettings.UsernamesEnabled ? _customerService.GetCustomerByUsername(username) : _customerService.GetCustomerByEmail(username);
             if (customer == null)
@@ -78,16 +95,28 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Controllers
             if (record != null)
             {
                 var isValidToken = _googleAuthenticatorService.ValidateTwoFactorToken(record.SecretKey, model.Token);
-                //isValidToken = true; //TODO удалить после тестов
                 if (isValidToken)
-                {                    
-                    //return RedirectToRoute("MultiFactorAuthorization");
-                    //return Json(new { Result = true, Customer = customer.Email }); 
-                    return _customerController.MultiFactorAuthorization(customer.Email);
+                {
+                    //migrate shopping cart
+                    _shoppingCartService.MigrateShoppingCart(_workContext.CurrentCustomer, customer, true);
+
+                    //sign in new customer
+                    _authenticationService.SignIn(customer, isPersist);
+
+                    //raise event       
+                    _eventPublisher.Publish(new CustomerLoggedinEvent(customer));
+
+                    //activity log
+                    _customerActivityService.InsertActivity(customer, "PublicStore.Login",
+                        _localizationService.GetResource("ActivityLog.PublicStore.Login"), customer);
+
+                    if (string.IsNullOrEmpty(returnUrl) || !Url.IsLocalUrl(returnUrl))
+                        return RedirectToRoute("Homepage");
+
+                    return Redirect(returnUrl);
                 }
             }
 
-            //return Json(new { Result = false });
             return RedirectToRoute("MultiFactorAuthorization");
         }
 

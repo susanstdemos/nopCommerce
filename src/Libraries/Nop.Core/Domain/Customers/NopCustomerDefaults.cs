@@ -280,6 +280,21 @@
         /// </summary>
         public static string SelectedMultiFactorAuthProviderAttribute => "SelectedMultiFactorAuthProvider";
 
+        /// <summary>
+        /// Gets a name of session attribute to store the value of 'RequiresMultiFactor.UserName'
+        /// </summary>
+        public static string MFAUserName => "RequiresMultiFactor.UserName";
+
+        /// <summary>
+        /// Gets a name of session attribute to store the value of 'RequiresMultiFactor.RememberMe'
+        /// </summary>
+        public static string MFARememberMe => "RequiresMultiFactor.RememberMe";
+
+        /// <summary>
+        /// Gets a name of session attribute to store the value of 'RequiresMultiFactor.ReturnUrl'
+        /// </summary>
+        public static string MFAReturnUrl => "RequiresMultiFactor.ReturnUrl";
+
         #endregion
     }
 }

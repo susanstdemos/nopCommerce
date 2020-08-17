@@ -448,13 +448,30 @@ namespace Nop.Web.Controllers
                                 ? _customerService.GetCustomerByUsername(model.Username)
                                 : _customerService.GetCustomerByEmail(model.Email);
 
-                            //sign in
-                            return SignInAction(customer, returnUrl, model.RememberMe);                            
+                            //migrate shopping cart
+                            _shoppingCartService.MigrateShoppingCart(_workContext.CurrentCustomer, customer, true);
+
+                            //sign in new customer
+                            _authenticationService.SignIn(customer, model.RememberMe);
+
+                            //raise event       
+                            _eventPublisher.Publish(new CustomerLoggedinEvent(customer));
+
+                            //activity log
+                            _customerActivityService.InsertActivity(customer, "PublicStore.Login",
+                                _localizationService.GetResource("ActivityLog.PublicStore.Login"), customer);
+
+                            if (string.IsNullOrEmpty(returnUrl) || !Url.IsLocalUrl(returnUrl))
+                                return RedirectToRoute("Homepage");
+
+                            return Redirect(returnUrl);
                         }
                     case CustomerLoginResults.RequiresMultiFactor:
                         {
                             var userName = _customerSettings.UsernamesEnabled ? model.Username : model.Email;
-                            HttpContext.Session.SetString("RequiresMultiFactor", userName);
+                            HttpContext.Session.SetString(NopCustomerDefaults.MFAUserName, userName);
+                            HttpContext.Session.SetString(NopCustomerDefaults.MFARememberMe, model.RememberMe.ToString());
+                            HttpContext.Session.SetString(NopCustomerDefaults.MFAReturnUrl, returnUrl);
                             return RedirectToRoute("MultiFactorAuthorization");
                         }
                     case CustomerLoginResults.CustomerNotExist:
@@ -484,12 +501,16 @@ namespace Nop.Web.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// The entry point for injecting a plugin component of type "MultiFactorAuth"
+        /// </summary>
+        /// <returns>User authorization page for MFA authentication. Served by an authentication provider.</returns>
         public virtual IActionResult MultiFactorAuthorization()
         {
             if (!_customerSettings.EnableMultifactorAuth)
                 return RedirectToRoute("Login");
 
-            var username = HttpContext.Session.GetString("RequiresMultiFactor");
+            var username = HttpContext.Session.GetString(NopCustomerDefaults.MFAUserName);
             if (string.IsNullOrEmpty(username))
                 return RedirectToRoute("HomePage");
 
@@ -507,44 +528,7 @@ namespace Nop.Web.Controllers
             model = _customerModelFactory.PrepareMultiFactorProviderModel(model, selectedProvider, true);
 
             return View(model);
-        }
-
-        [HttpPost]
-        public virtual IActionResult MultiFactorAuthorization(string customer)
-        {
-            //var username = HttpContext.Session.GetString("RequiresMultiFactor");
-            //if (customer == username)
-            //{
-            //    //remove session
-            //    HttpContext.Session.Remove("RequiresMultiFactor");
-            //}
-            var registeredCustomer = _customerSettings.UsernamesEnabled 
-                ? _customerService.GetCustomerByUsername(customer) 
-                : _customerService.GetCustomerByEmail(customer);
-
-            return SignInAction(registeredCustomer);
-        }
-
-        protected IActionResult SignInAction(Customer customer, string returnUrl = null, bool rememberMe = false)
-        {
-            //migrate shopping cart
-            _shoppingCartService.MigrateShoppingCart(_workContext.CurrentCustomer, customer, true);
-
-            //sign in new customer
-            _authenticationService.SignIn(customer, rememberMe);
-
-            //raise event       
-            _eventPublisher.Publish(new CustomerLoggedinEvent(customer));
-
-            //activity log
-            _customerActivityService.InsertActivity(customer, "PublicStore.Login",
-                _localizationService.GetResource("ActivityLog.PublicStore.Login"), customer);
-
-            if (string.IsNullOrEmpty(returnUrl) || !Url.IsLocalUrl(returnUrl))
-                return RedirectToRoute("Homepage");
-
-            return Redirect(returnUrl);
-        }
+        }        
 
         //available even when a store is closed
         [CheckAccessClosedStore(true)]
