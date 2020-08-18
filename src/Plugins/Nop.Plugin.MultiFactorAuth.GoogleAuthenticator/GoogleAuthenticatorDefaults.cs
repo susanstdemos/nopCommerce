@@ -48,6 +48,11 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator
         /// </summary>
         public static string PrefixCacheKey => "Nop.Plugin.MultiFactorAuth.GoogleAuthenticator";
 
+        /// <summary>
+        /// Gets the generic attribute name to hide search block on the plugin configuration page
+        /// </summary>
+        public static string HideSearchBlockAttribute = "GoogleAuthenticator.HideSearchBlock";
+
         #endregion
     }
 }

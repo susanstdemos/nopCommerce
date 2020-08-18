@@ -126,9 +126,11 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Services
         /// <param name="pageIndex">Page index</param>
         /// <param name="pageSize">Page size</param>
         /// <returns>Paged list of configurations</returns>
-        public IPagedList<GoogleAuthenticatorRecord> GetPagedConfigurations(int pageIndex = 0, int pageSize = int.MaxValue)
+        public IPagedList<GoogleAuthenticatorRecord> GetPagedConfigurations(string email = null, int pageIndex = 0, int pageSize = int.MaxValue)
         {
             var query = _repository.Table;
+            if (!string.IsNullOrWhiteSpace(email))
+                query = query.Where(c => c.Customer.Contains(email));
             query = query.OrderBy(configuration => configuration.Id);
 
             return new PagedList<GoogleAuthenticatorRecord>(query, pageIndex, pageSize);

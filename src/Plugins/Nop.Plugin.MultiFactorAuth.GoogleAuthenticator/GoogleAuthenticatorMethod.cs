@@ -92,7 +92,7 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator
                 //admin config 
                 ["Plugins.MultiFactorAuth.GoogleAuthenticator.QRPixelsPerModule"] = "QRPixelsPerModule",
                 ["Plugins.MultiFactorAuth.GoogleAuthenticator.QRPixelsPerModule.Hint"] = "Sets the number of pixels per unit. The module is one square in the QR code. By default is 3 for a 171x171 pixel image.",
-                ["Plugins.MultiFactorAuth.GoogleAuthenticator.Instructions"] = "Don't worry be happy!",
+                ["Plugins.MultiFactorAuth.GoogleAuthenticator.Instructions"] = "To use Google Authenticator, the app is first installed on a smartphone. The plugin provides a shared secret key to the user over a secure channel, to be stored in the Google Authenticator app. This secret key will be used for all future logins to the site.",
 
                 //db fields
                 ["Plugins.MultiFactorAuth.GoogleAuthenticator.Fields.Customer"] = "Customer",
@@ -102,7 +102,7 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator
                 ["Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.VerificationToken"] = "Google Authenticator Code",
                 ["Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.ManualSetupCode"] = "Manual entry setup code",
                 ["Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.SendCode"] = "Confirm",
-                ["Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.Instruction"] = "Please download the app Google Authenticator to scan this QR code.",
+                ["Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.Instruction"] = "Please download the app Google Authenticator to scan this QR code. If you already have a verified account with Google Authenticator, then you can change the parameters of your account by registering on this page. Your data in the system will be updated.",
                 ["Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.InstructionManual"] = "You can not scan code? You can add the entry manually, please provide the following details to the application on your phone.",
                 ["Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.Account"] = "Account: ",
                 ["Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.TypeKey"] = "Time based : Yes",

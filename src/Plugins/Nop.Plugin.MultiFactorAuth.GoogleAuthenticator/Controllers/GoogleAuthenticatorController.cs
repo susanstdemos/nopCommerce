@@ -4,6 +4,7 @@ using Nop.Core;
 using Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Models;
 using Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Services;
 using Nop.Services.Authentication.MultiFactor;
+using Nop.Services.Common;
 using Nop.Services.Configuration;
 using Nop.Services.Localization;
 using Nop.Services.Messages;
@@ -26,13 +27,15 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Controllers
 
         private readonly GoogleAuthenticatorService _googleAuthenticatorService;
         private readonly GoogleAuthenticatorSettings _googleAuthenticatorSettings;
+        private readonly IGenericAttributeService _genericAttributeService;
         private readonly ILocalizationService _localizationService;
         private readonly IMultiFactorAuthenticationPluginManager _multiFactorAuthenticationPluginManager;        
         private readonly INotificationService _notificationService;
         private readonly IPermissionService _permissionService;
         private readonly ISettingService _settingService;
         private readonly IStoreContext _storeContext;
-        
+        private readonly IWorkContext _workContext;
+
 
         #endregion
 
@@ -40,22 +43,26 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Controllers
 
         public GoogleAuthenticatorController(GoogleAuthenticatorService googleAuthenticatorService,
             GoogleAuthenticatorSettings googleAuthenticatorSettings,
+            IGenericAttributeService genericAttributeService,
             ILocalizationService localizationService,
             IMultiFactorAuthenticationPluginManager multiFactorAuthenticationPluginManager,
             INotificationService notificationService,
             IPermissionService permissionService,
             ISettingService settingService,
-            IStoreContext storeContext            
+            IStoreContext storeContext,
+            IWorkContext workContext
             )
         {
             _googleAuthenticatorService = googleAuthenticatorService;
             _googleAuthenticatorSettings = googleAuthenticatorSettings;
+            _genericAttributeService = genericAttributeService;
             _localizationService = localizationService;
             _multiFactorAuthenticationPluginManager = multiFactorAuthenticationPluginManager;
             _notificationService = notificationService;
             _permissionService = permissionService;
             _settingService = settingService;
-            _storeContext = storeContext;            
+            _storeContext = storeContext;
+            _workContext = workContext;
         }
 
         #endregion
@@ -71,7 +78,10 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Controllers
             var model = new ConfigurationModel
             {
                 QRPixelsPerModule = _googleAuthenticatorSettings.QRPixelsPerModule
+                
             };
+            model.GoogleAuthenticatorSearchModel.HideSearchBlock = _genericAttributeService
+                .GetAttribute<bool>(_workContext.CurrentCustomer, GoogleAuthenticatorDefaults.HideSearchBlockAttribute);
 
             return View("~/Plugins/MultiFactorAuth.GoogleAuthenticator/Views/Configure.cshtml", model);
         }
@@ -108,7 +118,8 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Controllers
                 return AccessDeniedView();
 
             //get GoogleAuthenticator configuration records
-            var configurations = _googleAuthenticatorService.GetPagedConfigurations(searchModel.Page - 1, searchModel.PageSize);
+            var configurations = _googleAuthenticatorService.GetPagedConfigurations(searchModel.SearchEmail,
+                searchModel.Page - 1, searchModel.PageSize);
             var model = new GoogleAuthenticatorListModel().PrepareToGrid(searchModel, configurations, () =>
             {
                 //fill in model values from the configuration
