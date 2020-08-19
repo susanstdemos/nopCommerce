@@ -35,7 +35,6 @@
         }
     </div>
     <div class="page-body">
-         @*<form asp-route="MultiFactorAuthenticatorSettings" method="post">*@        
          <form asp-route="MultiFactorAuthenticationSettings" method="post">
             <div class="fieldset">
                 <div class="title">
@@ -60,6 +59,10 @@
                             @if (Model.Providers.Count > 0)
                             {
                                 @await Html.PartialAsync("_MultiFactorAuthProviders", Model.Providers)
+                            }
+                            else
+                            {
+                                @T("Account.MultiFactorAuthentication.Providers.NoActive")
                             }
                         </div>                        
                     </div>

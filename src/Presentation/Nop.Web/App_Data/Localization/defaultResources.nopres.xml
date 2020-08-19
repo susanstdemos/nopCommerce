@@ -546,6 +546,9 @@
   <LocaleResource Name="Account.MultiFactorAuthentication.Providers">
     <Value>Authentication providers</Value>
   </LocaleResource>
+  <LocaleResource Name="Account.MultiFactorAuthentication.Providers.NoActive">
+    <Value>No active providers</Value>
+  </LocaleResource>
   <LocaleResource Name="Account.MultiFactorAuthentication.Settings">
     <Value>Settings</Value>
   </LocaleResource>

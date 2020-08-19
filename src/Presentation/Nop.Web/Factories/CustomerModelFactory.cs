@@ -963,8 +963,6 @@ namespace Nop.Web.Factories
             
             model.IsEnabled = _genericAttributeService.GetAttribute<bool>(customer, NopCustomerDefaults.MultiFactorIsEnabledAttribute);
             
-            //TODO посмотреть на общую настройку, включена ли mfa глобально
-
             var mfaProviders = _mfaPluginManager.LoadActivePlugins(customer, _storeContext.CurrentStore.Id).ToList();            
             foreach (var mfaProvider in mfaProviders)
             {

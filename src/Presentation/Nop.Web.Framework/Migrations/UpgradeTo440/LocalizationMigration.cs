@@ -153,7 +153,8 @@ namespace Nop.Web.Framework.Migrations.UpgradeTo440
                 ["PageTitle.MultiFactorAuthorization"] = "Multifactor authorization",
                 ["Account.MultiFactorAuthentication.Fields.IsEnabled"] = "Is enabled",
                 ["Account.MultiFactorAuthentication.Settings"] = "Settings",
-                ["Account.MultiFactorAuthentication.Providers"] = "Authentication providers"
+                ["Account.MultiFactorAuthentication.Providers"] = "Authentication providers",
+                ["Account.MultiFactorAuthentication.Providers.NoActive"] = "No active providers"
                 //</MFA #475>
 
             });
