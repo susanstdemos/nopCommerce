@@ -3,6 +3,9 @@ using Nop.Web.Framework.Mvc.ModelBinding;
 
 namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Models
 {
+    /// <summary>
+    /// Represents authentication model
+    /// </summary>
     public class AuthModel : BaseNopModel
     {
         public string SecretKey { get; set; }

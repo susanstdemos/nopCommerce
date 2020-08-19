@@ -1,7 +1,6 @@
 ﻿@model Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Models.TokenModel
 
 <form asp-controller="Authentication" asp-action="VerifyGoogleAuthenticator" method="post">
-     @*<div asp-validation-summary="ModelOnly" class="message-error">@T("Account.Login.Unsuccessful")</div>*@
     <div class="inputs">
         <label asp-for="Token" asp-postfix=":"></label>
         <input asp-for="Token" class="username" autofocus="autofocus" />

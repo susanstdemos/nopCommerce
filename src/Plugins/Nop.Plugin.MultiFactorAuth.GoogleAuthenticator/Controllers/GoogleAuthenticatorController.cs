@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Nop.Core;
 using Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Models;
 using Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Services;
-using Nop.Services.Authentication.MultiFactor;
 using Nop.Services.Common;
 using Nop.Services.Configuration;
 using Nop.Services.Localization;
@@ -29,7 +28,6 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Controllers
         private readonly GoogleAuthenticatorSettings _googleAuthenticatorSettings;
         private readonly IGenericAttributeService _genericAttributeService;
         private readonly ILocalizationService _localizationService;
-        private readonly IMultiFactorAuthenticationPluginManager _multiFactorAuthenticationPluginManager;        
         private readonly INotificationService _notificationService;
         private readonly IPermissionService _permissionService;
         private readonly ISettingService _settingService;
@@ -45,7 +43,6 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Controllers
             GoogleAuthenticatorSettings googleAuthenticatorSettings,
             IGenericAttributeService genericAttributeService,
             ILocalizationService localizationService,
-            IMultiFactorAuthenticationPluginManager multiFactorAuthenticationPluginManager,
             INotificationService notificationService,
             IPermissionService permissionService,
             ISettingService settingService,
@@ -57,7 +54,6 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Controllers
             _googleAuthenticatorSettings = googleAuthenticatorSettings;
             _genericAttributeService = genericAttributeService;
             _localizationService = localizationService;
-            _multiFactorAuthenticationPluginManager = multiFactorAuthenticationPluginManager;
             _notificationService = notificationService;
             _permissionService = permissionService;
             _settingService = settingService;

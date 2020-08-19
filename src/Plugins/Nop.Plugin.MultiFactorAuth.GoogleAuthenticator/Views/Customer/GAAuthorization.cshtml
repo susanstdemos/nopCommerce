@@ -23,7 +23,6 @@
                     <td class="manual-code">
                         <div class="manual-code-setup">
                             <ul class="instruction" style="margin-bottom:20px">
-                                @*<li>@Html.Raw(T("Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.Instruction"))</li>*@
                                 <li>@Html.Raw(T("Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.InstructionManual"))</li>
                             </ul>
                             <ul class="account-info">
@@ -37,9 +36,6 @@
                 </tr>
         </table>
     </div>
-    
-    
-    
 
     <form asp-controller="Authentication" asp-action="RegisterGoogleAuthenticator" method="post">
         <div>
