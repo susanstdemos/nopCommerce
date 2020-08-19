@@ -97,6 +97,7 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator
                 //db fields
                 ["Plugins.MultiFactorAuth.GoogleAuthenticator.Fields.Customer"] = "Customer",
                 ["Plugins.MultiFactorAuth.GoogleAuthenticator.Fields.SecretKey"] = "Secret key",
+                ["Plugins.MultiFactorAuth.GoogleAuthenticator.Fields.StoreId"] = "Store ID",
 
                 //customer config
                 ["Plugins.MultiFactorAuth.GoogleAuthenticator.Customer.VerificationToken"] = "Google Authenticator Code",

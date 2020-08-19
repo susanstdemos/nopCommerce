@@ -11,5 +11,7 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Models
 
         public string SecretKey { get; set; }
 
+        public int StoreId { get; set; }
+
     }
 }

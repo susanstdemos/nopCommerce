@@ -9,6 +9,7 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Factories
     {
         #region Fields
 
+        private readonly IStoreContext _storeContext;
         private readonly IWorkContext _workContext;
         private readonly GoogleAuthenticatorService _googleAuthenticatorService;
 
@@ -16,9 +17,11 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Factories
 
         #region Ctor
 
-        public AuthorizationModelFactory(GoogleAuthenticatorService googleAuthenticatorService,
+        public AuthorizationModelFactory(IStoreContext storeContext,
+            GoogleAuthenticatorService googleAuthenticatorService,
             IWorkContext workContext)
         {
+            _storeContext = storeContext;
             _googleAuthenticatorService = googleAuthenticatorService;
             _workContext = workContext;
         }
@@ -36,7 +39,7 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Factories
             var setupInfo = _googleAuthenticatorService.GenerateSetupCode(secretkey);
 
             model.SecretKey = secretkey;
-            model.Account = $"nopCommerce ({_workContext.CurrentCustomer.Email})";
+            model.Account = $"{_storeContext.CurrentStore.CompanyName} ({_workContext.CurrentCustomer.Email})";
             model.ManualEntryQrCode = setupInfo.ManualEntryKey;
             model.QrCodeImageUrl = setupInfo.QrCodeSetupImageUrl;
 

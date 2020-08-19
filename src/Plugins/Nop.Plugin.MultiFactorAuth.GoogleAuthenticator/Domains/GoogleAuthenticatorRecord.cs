@@ -16,5 +16,10 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Domains
         /// Gets or sets a SecretKey identifier
         /// </summary>
         public string SecretKey { get; set; }
+
+        /// <summary>
+        /// Gets or sets a current store identifier
+        /// </summary>
+        public int StoreId { get; set; }
     }
 }

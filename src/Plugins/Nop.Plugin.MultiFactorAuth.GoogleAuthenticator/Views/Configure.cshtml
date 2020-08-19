@@ -77,14 +77,18 @@
                     {
                         new ColumnProperty(nameof(GoogleAuthenticatorModel.Customer))
                         {
-                            Title = T("Plugins.MultiFactorAuth.GoogleAuthenticator.Fields.Customer").Text,
-                            Width = "300",
+                            Title = T("Plugins.MultiFactorAuth.GoogleAuthenticator.Fields.Customer").Text
                         },
                         new ColumnProperty(nameof(GoogleAuthenticatorModel.SecretKey))
                         {
                             Title = T("Plugins.MultiFactorAuth.GoogleAuthenticator.Fields.SecretKey").Text,
                             Width = "200",
-                        },                        
+                        },  
+                        new ColumnProperty(nameof(GoogleAuthenticatorModel.StoreId))
+                        {
+                            Title = T("Plugins.MultiFactorAuth.GoogleAuthenticator.Fields.StoreId").Text,
+                            Width = "200",
+                        }, 
                         new ColumnProperty(nameof(GoogleAuthenticatorModel.Id))
                         {
                             Title = T("Admin.Common.Delete").Text,

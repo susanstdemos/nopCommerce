@@ -19,6 +19,7 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Services
         private readonly ICacheKeyService _cacheKeyService;
         private readonly IRepository<GoogleAuthenticatorRecord> _repository;
         private readonly IStaticCacheManager _staticCacheManager;
+        private readonly IStoreContext _storeContext;
         private readonly IWorkContext _workContext;
         private TwoFactorAuthenticator _twoFactorAuthenticator;
         
@@ -30,11 +31,13 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Services
         public GoogleAuthenticatorService(ICacheKeyService cacheKeyService,
             IRepository<GoogleAuthenticatorRecord> repository,
             IStaticCacheManager staticCacheManager,
+            IStoreContext storeContext,
             IWorkContext workContext)
         {
             _cacheKeyService = cacheKeyService;
             _repository = repository;
             _staticCacheManager = staticCacheManager;
+            _storeContext = storeContext;
             _workContext = workContext;
         }
         #endregion
@@ -113,7 +116,7 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Services
                 return null;
 
             var query = _repository.Table;
-            return query.Where(customer => customer.Customer == email).FirstOrDefault();
+            return query.Where(record => record.Customer == email && record.StoreId == _storeContext.CurrentStore.Id).FirstOrDefault();
         }
 
         #endregion
@@ -134,39 +137,69 @@ namespace Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.Services
             query = query.OrderBy(configuration => configuration.Id);
 
             return new PagedList<GoogleAuthenticatorRecord>(query, pageIndex, pageSize);
-        } 
-        
+        }
+
+        /// <summary>
+        /// Check if the customer is registered  
+        /// </summary>
+        /// <param name="customerEmail"></param>
+        /// <returns></returns>
         public bool IsRegisteredCustomer(string customerEmail)
         {
             return GetConfigurationByCustomerEmail(customerEmail) != null;
         }
 
+        /// <summary>
+        /// Add configuration of GoogleAuthenticator
+        /// </summary>
+        /// <param name="customerEmail">Customer email</param>
+        /// <param name="key">Secret key</param>
         public void AddGoogleAuthenticatorAccount(string customerEmail, string key)
         {
             var account = new GoogleAuthenticatorRecord
             {
                 Customer = customerEmail,
-                SecretKey = key
+                SecretKey = key,
+                StoreId  = _storeContext.CurrentStore.Id
             };
             InsertConfiguration(account);
 
         }
 
+        /// <summary>
+        /// Update configuration of GoogleAuthenticator
+        /// </summary>
+        /// <param name="customerEmail">Customer email</param>
+        /// <param name="key">Secret key</param>
         public void UpdateGoogleAuthenticatorAccount(string customerEmail, string key)
         {
             var account = GetConfigurationByCustomerEmail(customerEmail);
-            if (account !=null)
+            if (account != null)
             {
                 account.SecretKey = key;
                 UpdateConfiguration(account);
             }
         }
 
+        /// <summary>
+        /// Generate a setup code for a Google Authenticator user to scan
+        /// </summary>
+        /// <param name="secretkey">Secret key</param>
+        /// <returns></returns>
         public SetupCode GenerateSetupCode(string secretkey)
         {
-            return TwoFactorAuthenticator.GenerateSetupCode("nopCommerce", _workContext.CurrentCustomer.Email, secretkey, false, 3);
+            return TwoFactorAuthenticator.GenerateSetupCode(
+                _storeContext.CurrentStore.CompanyName, 
+                _workContext.CurrentCustomer.Email, 
+                secretkey, false, GoogleAuthenticatorDefaults.DefaultQRPixelsPerModule);
         }
 
+        /// <summary>
+        /// Validate token auth
+        /// </summary>
+        /// <param name="secretkey">Secret key</param>
+        /// <param name="token">Token</param>
+        /// <returns></returns>
         public bool ValidateTwoFactorToken(string secretkey, string token)
         {
             return TwoFactorAuthenticator.ValidateTwoFactorPIN(secretkey, token);
