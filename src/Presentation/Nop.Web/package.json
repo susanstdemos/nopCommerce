@@ -34,7 +34,7 @@
     "jquery-validation-unobtrusive": "3.2.11",
     "jsrender": "1.0.5",
     "magnific-popup": "1.1.0",
-    "moment": "2.22.2",
+    "moment": "2.29.1",
     "tinymce": "4.0.25",
     "typeahead.js": "0.11.1"
   }
